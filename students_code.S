@@ -53,6 +53,26 @@ ret
   
 
 hamming_weight:
+#codeword_ptr <- rdi
+#len <- rsi
+push %rbp
+mov %rsp,%rbp
+cmp $0,%rsi
+je hamming_weight_end
+xor %rcx,%rcx #i=0
+xor %rax,%rax #sum=0
+
+weight_loop:
+movq (%rdi,%rcx,8),%rbx
+xor %rdx,%rdx
+popcnt %rbx,%rdx
+add %rdx,%rax
+inc %rcx
+cmp %rcx,%rsi
+jne weight_loop
+
+hamming_weight_end:
+  pop %rbp
   ret
 
 negate_first_k:
