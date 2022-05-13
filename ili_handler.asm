@@ -4,9 +4,7 @@
 .align 4, 0x90
 my_ili_handler:
   ####### Some smart student's code here #######
-mov $to_print, %rdi
-call print
-iret
+  
 push %rbp
 mov %rsp, %rbp
 push %rax
@@ -18,18 +16,20 @@ push %r8
 push %r9
 push %r10
 push %r11
-mov 80(%rsp), %r11
-movb (%r11), %cl
+mov 80(%rsp), %r11 #r11 <- rip
+movb (%r11), %cl #cl <- first byte of (RIP)
 cmp $0x0F, %cl
 jne one_byte_only
 movb 1(%r11), %cl
 movb %cl, %dil
 call what_to_do
+mov $2,%r15
 jmp finish_what_to_do
 
 one_byte_only:
 movb %cl, %dil
 call what_to_do
+mov $1,%r15
 jmp finish_what_to_do
 
 
@@ -47,13 +47,14 @@ je jump_to_original
 mov %rax, %rdi
 pop %rax
 pop %rbp
-add $8, (%rsp)
+
+add %r15,(%rsp)
   iretq
 
 jump_to_original:
 pop %rax
 pop %rbp
-jmp old_ili_handler
+jmp *old_ili_handler
 
 
 
