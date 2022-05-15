@@ -125,6 +125,14 @@ xor %rcx, %rcx #i from first to the len word
 mov %rdi, %r12 #r12<-- pointer to codeword
 mov %rsi, %r13 #r13<-- len
 imul $32, %rsi, %rbx #rbx- the size of hamming weight
+
+mov %r12, %rdi
+mov %r13, %rsi
+push %rcx
+call hamming_weight
+pop %rcx
+cmp %rax,%rbx
+je end_loops
 negate_ext_loop:
 movq (%r12, %rcx, 8), %r14 #current word working on
 mov $1, %r15 #k
