@@ -15,7 +15,6 @@ mov %rdi,%r12
 open_file:
 lea path(%rip), %rdi
 call get_path
-lea path(%rip), %rdi
 mov $2,%rax
 mov $0, %rsi
 syscall
@@ -96,7 +95,7 @@ mov %rsp, %rbp
 push %r14
 xor %rcx, %rcx
 xor %r14, %r14
-cmp $0, %rsi
+cmp $0, %rdi
 je negate_end
 
 loop_negate_ones:
@@ -125,8 +124,7 @@ push %rbx
 xor %rcx, %rcx #i from first to the len word
 mov %rdi, %r12 #r12<-- pointer to codeword
 mov %rsi, %r13 #r13<-- len
-sal $5, %rsi #rbx- the size of hamming weight
-mov %rsi,%rbx
+imul $32, %rsi, %rbx #rbx- the size of hamming weight
 
 mov %r12, %rdi
 mov %r13, %rsi
@@ -144,7 +142,7 @@ mov %r15, %rsi
 push %rcx
 call negate_first_k
 pop %rcx
-mov %rax, (%r12, %rcx, 8)
+movq %rax, (%r12, %rcx, 8)
 mov %r12, %rdi
 mov %r13, %rsi
 push %rcx
@@ -163,7 +161,7 @@ jmp negate_ext_loop
 
 end_loops:
 mov %r15, %rax
-sal $6, %rcx
+imul $64, %rcx
 add %rcx, %rax
 pop %rbx
 pop %r15
@@ -172,6 +170,3 @@ pop %r13
 pop %r12
 pop %rbp
   ret
-
-
-    
